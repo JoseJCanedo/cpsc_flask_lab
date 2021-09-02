@@ -77,9 +77,63 @@ def hello_name(name):              # call method hello_name
 
 Okay now that we have a simple app returning hello world and also hello "insert your name here", lets add a simple HTML file.
 
-Create a new html file and call it **index.html**
+Create a new folder called **templates** and within the folder create an html file and call it **index.html**
 
-```http
+```xml
 <!DOCTYPE html>
-
+<html lang=en dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>CPSC4125 Flask</title>
+    </head>
+    <body>
+        <h1>First Flask HTML page</h1>
+        <p>This is a sample</p>
+    </body>
+</html>
 ```
+
+Now that we have that HTML file we need to call it so it can be returned to the front end. So we have to go back to our app.py file. We probably want to return it when we go to the home page.
+
+To accomplish this we need to import render_template along with Flask. Change the import to
+
+```python
+from flask import Flask, render_template   
+```
+The second thing we need to do is modify the return on the home page route to return the template instead of "Hello World"
+
+```python
+@app.route("/")                
+def hello():                    
+    return render_template("index.html") 
+```
+
+If you refresh your browser running the application on port 5000 you should see the HTML page we added being rendered. If youre still on the page returning your name navigate to the home page.
+
+## Bootstrap
+
+Okay so now in the index.html I want you to navigate to the [Bootstrap website](https://getbootstrap.com/docs/5.1/getting-started/introduction/) and replace the html with the **Starter Template** from the website. Remove the comments in the HTML and replace the title and heading "Hello World" with "Flask App".
+
+## CSS
+Since we cant rely on Bootstrap to give us all the styling we need we will be adding a CSS file to this. As with the template Flask will be looking for the CSS in a specific folder.
+
+So lets create a folder named **static** and within that we will create another folder called **css**. Within the folder css lets create our css file and call it **app.css**
+
+```css
+h1{
+    color: blue;
+}
+```
+With this we now have what we need to import the CSS file into the template. Its not as straight forward as adding in a normal HTML file. We have a little bit of flask specific nuances we need to follow. 
+
+Within index.html we will be adding the link to the stylesheet (css) within the < head > tag and right before the < title > tag
+```xml
+<link rel="stylesheet" href="{{url_for('static',filename='css/app.css')}}">
+```
+You should be able to refresh and see the font change to blue.
+
+## Next Steps
+
+On the next part we will be extending this by adding routing to another page, using a template and blocks to prevent duplicate code, and we will setup the page for you to finish this off as your flask+python web app.
+
+Be on the look out for a lecture on APIs as they will be important for us from here on out. 
