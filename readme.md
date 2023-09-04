@@ -301,6 +301,53 @@ So in one line we are assigning name from the query parameters to the name varia
 
 Restart the app and play with those changes. 
 
+## API Integration
+You will need to connect to either an API or a database. In this example we will connect to an API. Lets start by explaining an API. An API is a application programming interface and many companies work with or create APIs for other companies or people to consume. If you try to work within almost any technology company you will come across this. These interfaces send information, most commonly, using JSON which has a specific structure. For this example we will be using a simple and fee API provided by the creators of the XKCD comic. The documentation is here: https://xkcd.com/json.html and if you click on the current comic link you will see some output in JSON. JSON is simply key value pairs. The value could be a string, bool, int, array or object. You can learn about or I can provide additional information about JSON or APIs if you have any questions. 
+
+Okay for setup. We will need a couple of imports added to the top of your main python file.
+
+```python
+import urllib.request, json
+```
+
+Within the method you are going to use to display the information we need to make the API call to the interface and fetch the data. In this case lets put it in the home template.
+
+```python
+# We need to add the URL we will be using to fetch information from.
+# Sometimes this means also sending some data like a key, but not for this one
+url = "https://xkcd.com/info.0.json"
+response = urllib.request.urlopen(url)
+# Once we have the response we need to extract the data we want.
+data = response.read()
+dict = json.loads(data)
+```
+
+Okay at this point you have fetched data from the API and loaded the response to a variable called "dict". Now we have to send this data from our backend python to the template to use it in the HTML and be able to display it. For this we pass the information as a variable to the template.
+
+```python
+return render_template("index.html", datum=dict)
+```
+
+Here we are sending the data to index.html as a variable called datum. The variable name can be anything and should relate to the data you are sending. For now we will just use datum. So now we should go to the template and look at using the data we just fetched from our API. If you took a look at the data we are getting back it would look something like this:
+
+```json
+{"month": "1", "num": 1, "link": "", "year": "2006", "news": "", "safe_title": "Barrel - Part 1", "transcript": "[[A boy sits in a barrel which is floating in an ocean.]]\nBoy: I wonder where I'll float next?\n[[The barrel drifts into the distance. Nothing else can be seen.]]\n{{Alt: Don't we all.}}", "alt": "Don't we all.", "img": "https://imgs.xkcd.com/comics/barrel_cropped_(1).jpg", "title": "Barrel - Part 1", "day": "1"}
+```
+
+So from this we could use the title, img (for the src to fetch the comic), the alt (in case the URL doesnt work), the date (month, day, year), and the transcript maybe. 
+
+On the template we would reference the data from the object by calling the variable name and then the key we need. If the value of the key is an object we would reference the key and then the next key within the value. For example "datum.foo.bar". Within the template we use the notation {{ variable }} to get the data to display where needed. For example the date would display using the below in the format of DD/MM/YYYY. Of course you can display it however you want. 
+
+```xml
+<p>{{datum.day}}/{{datum.month}}/{{datum.year}}</p>
+```
+
+To display the image we could do
+
+```xml
+<img src="{{datum.img}}" />
+```
+
 ## Wrap up
 So in this lab we learned to use a bit of Flask, routing, rendering html templates, using path parameters in the hello_name function, query parameters in the about template, sending the variable to the template, and extending the nav bar. 
 
